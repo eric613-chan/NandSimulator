@@ -7,8 +7,9 @@ INCLUDE = -I../include \
 		  -I../lib/misc
 LDFLAGS = -L../nand/ -lnand \
 		  -L../lib/misc/ -lmisc \
-		  -L../lib/brotli/ -lbrotli
-CFLAGS += -O3 -g
+		  -L../lib/brotli/ -lbrotli \
+		  -lm
+CFLAGS += -O0 -g
 
 define make_subdir
     @for subdir in $(SUBDIRS) ; do \

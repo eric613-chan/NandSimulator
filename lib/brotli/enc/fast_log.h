@@ -135,6 +135,8 @@ static BROTLI_INLINE double FastLog2(size_t v) {
   return log((double)v) * LOG_2_INV;
 #else
   return log2((double)v);
+  // 用换底公式
+  // return log((double)v)/log((double)2);
 #endif
 }
 
