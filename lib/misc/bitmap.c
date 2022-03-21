@@ -33,7 +33,8 @@ struct bitmap *bitmap_create(unsigned int size, unsigned int base)
 	return bm;
 }
 
-
+// Func: set page#'s 'corresponding bit 
+// index - indicate the page# which range is 1 ~ 2048 * 256
 void bitmap_set(struct bitmap *bm, unsigned int index)
 {
 	unsigned int start, len;
@@ -45,6 +46,8 @@ void bitmap_set(struct bitmap *bm, unsigned int index)
 	bm->b[start] |= (1 << len);
 }
 
+// Func: clear page#'s 'corresponding bit 
+// index - indicate the page# which range is 1 ~ 2048 * 256
 void bitmap_clear(struct bitmap *bm, unsigned int index)
 {
 	unsigned int start, len;
@@ -56,6 +59,8 @@ void bitmap_clear(struct bitmap *bm, unsigned int index)
 	bm->b[start] &= ~(1 << len);
 }
 
+// Func: get page#'s 'corresponding bit 
+// index - indicate the page# which range is 1 ~ 2048 * 256
 int bitmap_get(struct bitmap *bm, unsigned int index)
 {
 	unsigned int start, len;

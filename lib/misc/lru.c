@@ -21,7 +21,8 @@
 #include "common.h"
 #include "lru.h"
 
-
+// Using DJB Time33 hash func
+//
 static unsigned int DJBhash(char *str, unsigned int len)
 {
 	unsigned int i;
@@ -147,6 +148,7 @@ struct lru_cache *lru_create(unsigned int size, unsigned int num)
 	struct lru_cache *lru;
 	struct lru_node *node;
 
+    // 这些 node , 还有 table 是做什么用的?
 	node_size = size + sizeof(struct lru_node);
 	lru = mem_alloc(sizeof(struct lru_cache) + node_size * num);
 
@@ -156,7 +158,7 @@ struct lru_cache *lru_create(unsigned int size, unsigned int num)
 
 	lru->table = mem_alloc(roundup_power2(size) * sizeof(void *));
 
-	/* initial lru node */
+	/* initial lru node with default key*/
 	lru->free = NULL;
 	for (i = num - 1; i >= 0; i--) {
 		node = (struct lru_node *)((char *)lru->cache + i * node_size);

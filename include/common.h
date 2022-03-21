@@ -133,6 +133,12 @@ static inline unsigned short calc_crc16(unsigned short crc, unsigned char data) 
     return rc;
 }
 
+// Func: check the position of hightest bit-1 of x
+//       For example, 0x0a = 0x1010, its hightest bit-1 is 4
+//                    0x06 = 0x0110, its hightest bit-1 is 3
+// normally, we could use for-loop to find the hightest bit-1,
+// seems this algrithem has better performance
+//
 static inline int fls32(unsigned int x)
 {
 	int r = 32;
@@ -179,6 +185,16 @@ static inline bool is_power_of_2(unsigned long n)
 }
 
 
+// Func: 返回离 n 最近的 2^x 的那个值, 例如: n = 
+// 1 -- (1 - 1) = 0 的最高位的 1, 没有, 所以返回 1 << 0 --> 1
+// 2 -- (2 - 1) = 1 的最高位的 1 在 bit0, 即位置 1 上, 所以返回 1 << 1 --> 2
+// 3 -- (3 - 1) = 2 的最高位的 1 在 bit1, 即位置 2 上, 所以返回 1 << 2 --> 4
+// 4 -- (4 - 1) = 3 的最高位的 1 在 bit1, 即位置 2 上, 所以返回 1 << 2 --> 4
+// 5 -- (5 - 1) = 4 的最高位的 1 在 bit2, 即位置 3 上, 所以返回 1 << 3 --> 8
+// 6 -- (6 - 1) = 5 的最高位的 1 在 bit2, 即位置 3 上, 所以返回 1 << 3 --> 8
+// 7 -- (7 - 1) = 6 的最高位的 1 在 bit2, 即位置 3 上, 所以返回 1 << 3 --> 8
+// 8 -- (8 - 1) = 7 的最高位的 1 在 bit2, 即位置 3 上, 所以返回 1 << 3 --> 8
+// 9 -- (9 - 1) = 8 的最高位的 1 在 bit3, 即位置 4 上, 所以返回 1 << 4 --> 16
 static inline unsigned long roundup_power2(unsigned long n)
 {
 	if (sizeof(n) == 4)
