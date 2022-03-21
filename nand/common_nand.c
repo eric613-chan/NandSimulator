@@ -168,12 +168,12 @@ static int common_nand_erase(struct nand_base *nand, int row)
 static int common_nand_read_page(struct nand_base *nand, int row, void *data)
 {
 	unsigned char *buf;
-	int block, size;
+	int block, size, offset = 0;
 	struct common_nand *com_nand = (struct common_nand *)nand;
 
 	com_nand->status = 0;
 	block = row / com_nand->page_num_per_block;
-	row = row % com_nand->page_num_per_block;
+	offset = row % com_nand->page_num_per_block;
 
 	if (common_nand_bad_block(com_nand, block)) {
 		LOG(LOG_WARN, "read bad block %d", block);
@@ -187,7 +187,7 @@ static int common_nand_read_page(struct nand_base *nand, int row, void *data)
 		return 0;
 	}
 	buf = file_read(com_nand->block_file, block);
-	memcpy(data, buf + row * size, size);
+	memcpy(data, buf + offset * size, size);
 	com_nand->block_info[block].read_count++;
 	return common_nand_err_bit_gen(com_nand, block);
 }
@@ -211,10 +211,11 @@ static int common_nand_program_page(struct nand_base *nand, int row, void *data)
 		return 0;
 	}
 
-	block = row / com_nand->page_num_per_block;
+	block = row / com_nand->page_num_per_block; // 根据 row# 算出 block#
 	size = nand->page_size + nand->spare_size;
-	offset = row % com_nand->page_num_per_block * size;
+	offset = row % com_nand->page_num_per_block * size; // 相对于该 block 起始点的 offset
 
+    // 如果这个 block 的擦写次数已经超过最大可擦写次数, set status -> failed
 	if (com_nand->block_info[block].pe_cycle > nand->max_pe_cycle) {
 		LOG(LOG_WARN, " %d", row);
 		com_nand->status |= (1 << STATUS_FAIL);
